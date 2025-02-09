@@ -14,8 +14,9 @@ from gnuradio import qtgui
 from PyQt5 import QtCore
 from gnuradio import analog
 from gnuradio import blocks
-from gnuradio import gr
+from gnuradio import filter
 from gnuradio.filter import firdes
+from gnuradio import gr
 from gnuradio.fft import window
 import sys
 import signal
@@ -65,13 +66,13 @@ class default(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate = 32000
         self.band_pass_low_cutoff = band_pass_low_cutoff = -5e4
         self.band_pass_high_cutoff = band_pass_high_cutoff = 50e4
-        self.Signal_Center_Freq = Signal_Center_Freq = -3e6
+        self.Signal_Center_Freq = Signal_Center_Freq = 3e6
 
         ##################################################
         # Blocks
         ##################################################
 
-        self._Signal_Center_Freq_range = qtgui.Range(-3e6, 3e6, 100e3, -3e6, 200)
+        self._Signal_Center_Freq_range = qtgui.Range(-6e6, 6e6, 100e3, 3e6, 200)
         self._Signal_Center_Freq_win = qtgui.RangeWidget(self._Signal_Center_Freq_range, self.set_Signal_Center_Freq, "'Signal_Center_Freq'", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._Signal_Center_Freq_win)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
@@ -80,7 +81,7 @@ class default(gr.top_block, Qt.QWidget):
             0, #fc
             20e6, #bw
             "", #name
-            2,
+            1,
             None # parent
         )
         self.qtgui_freq_sink_x_0.set_update_time(0.10)
@@ -96,7 +97,7 @@ class default(gr.top_block, Qt.QWidget):
 
 
 
-        labels = ['Raw Signal', 'Multiplied', '', '', '',
+        labels = ['Signal', 'Multiplied', '', '', '',
             '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
             1, 1, 1, 1, 1]
@@ -105,7 +106,7 @@ class default(gr.top_block, Qt.QWidget):
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
             1.0, 1.0, 1.0, 1.0, 1.0]
 
-        for i in range(2):
+        for i in range(1):
             if len(labels[i]) == 0:
                 self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
             else:
@@ -117,7 +118,7 @@ class default(gr.top_block, Qt.QWidget):
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
         self.blocks_wavfile_source_0 = blocks.wavfile_source('C:\\Users\\Sam\\Desktop\\GNU Radio Projects\\GMR-DSP-OFDM\\OFDM_IQ_SIM_256Char.wav', True)
-        self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, 10e6, True, 0 if "auto" == "auto" else max( int(float(0.1) * 10e6) if "auto" == "time" else int(0.1), 1) )
+        self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, 20e6, True, 0 if "auto" == "auto" else max( int(float(0.1) * 20e6) if "auto" == "time" else int(0.1), 1) )
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self._band_pass_low_cutoff_range = qtgui.Range(-100e6, 0, 1, -5e4, 200)
@@ -136,9 +137,8 @@ class default(gr.top_block, Qt.QWidget):
         self.connect((self.analog_const_source_x_0, 0), (self.blocks_float_to_complex_0, 1))
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))
         self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_multiply_xx_0, 0))
-        self.connect((self.blocks_float_to_complex_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_throttle2_0, 0))
-        self.connect((self.blocks_throttle2_0, 0), (self.qtgui_freq_sink_x_0, 1))
+        self.connect((self.blocks_throttle2_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.blocks_wavfile_source_0, 0), (self.blocks_float_to_complex_0, 0))
 
 

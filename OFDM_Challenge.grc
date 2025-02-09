@@ -42,10 +42,10 @@ blocks:
     min_len: '200'
     orient: QtCore.Qt.Horizontal
     rangeType: float
-    start: -3e6
+    start: -6e6
     step: 100e3
-    stop: 3e6
-    value: -3e6
+    stop: 6e6
+    value: 3e6
     widget: counter_slider
   states:
     bus_sink: false
@@ -148,6 +148,31 @@ blocks:
     coordinate: [416, 472.0]
     rotation: 0
     state: enabled
+- name: band_pass_filter_0
+  id: band_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    decim: '1'
+    gain: '1'
+    high_cutoff_freq: -2e6
+    interp: '1'
+    low_cutoff_freq: -4e6
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: 20e6
+    type: fir_filter_ccf
+    width: '1'
+    win: window.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1008, 456.0]
+    rotation: 0
+    state: bypassed
 - name: blocks_float_to_complex_0
   id: blocks_float_to_complex
   parameters:
@@ -193,7 +218,7 @@ blocks:
     maximum: '0.1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samples_per_second: 10e6
+    samples_per_second: 20e6
     type: complex
     vlen: '1'
   states:
@@ -221,30 +246,6 @@ blocks:
     coordinate: [120, 256.0]
     rotation: 0
     state: enabled
-- name: high_pass_filter_0
-  id: high_pass_filter
-  parameters:
-    affinity: ''
-    alias: ''
-    beta: '6.76'
-    comment: ''
-    cutoff_freq: 400e6
-    decim: '1'
-    gain: '1'
-    interp: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    samp_rate: 800e6
-    type: fir_filter_ccf
-    width: '12'
-    win: window.WIN_HAMMING
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1008, 552.0]
-    rotation: 0
-    state: disabled
 - name: qtgui_freq_sink_x_0
   id: qtgui_freq_sink_x
   parameters:
@@ -282,7 +283,7 @@ blocks:
     grid: 'False'
     gui_hint: ''
     label: Relative Gain
-    label1: Raw Signal
+    label1: Signal
     label10: ''''''
     label2: Multiplied
     label3: ''''''
@@ -296,7 +297,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     name: '""'
-    nconnections: '2'
+    nconnections: '1'
     norm_window: 'False'
     showports: 'False'
     tr_chan: '0'
@@ -323,17 +324,17 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 296.0]
+    coordinate: [1216, 376.0]
     rotation: 0
     state: enabled
 
 connections:
 - [analog_const_source_x_0, '0', blocks_float_to_complex_0, '1']
 - [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
+- [band_pass_filter_0, '0', qtgui_freq_sink_x_0, '0']
 - [blocks_float_to_complex_0, '0', blocks_multiply_xx_0, '0']
-- [blocks_float_to_complex_0, '0', qtgui_freq_sink_x_0, '0']
 - [blocks_multiply_xx_0, '0', blocks_throttle2_0, '0']
-- [blocks_throttle2_0, '0', qtgui_freq_sink_x_0, '1']
+- [blocks_throttle2_0, '0', band_pass_filter_0, '0']
 - [blocks_wavfile_source_0, '0', blocks_float_to_complex_0, '0']
 
 metadata:
