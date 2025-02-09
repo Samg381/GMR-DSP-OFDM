@@ -33,6 +33,27 @@ options:
     state: enabled
 
 blocks:
+- name: Center_Freq_MHz
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '10'
+    value: '3'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [408, 608.0]
+    rotation: 0
+    state: enabled
 - name: band_pass_high_cutoff
   id: variable_qtgui_range
   parameters:
@@ -51,7 +72,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1072, 496.0]
+    coordinate: [1072, 704.0]
     rotation: 0
     state: enabled
 - name: band_pass_low_cutoff
@@ -72,28 +93,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [936, 496.0]
-    rotation: 0
-    state: enabled
-- name: new_center_frequency_test
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    gui_hint: ''
-    label: ''
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: -10e6
-    step: '1'
-    stop: 10e6
-    value: -3e6
-    widget: counter_slider
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [408, 608.0]
+    coordinate: [936, 704.0]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -132,7 +132,7 @@ blocks:
     alias: ''
     amp: '1'
     comment: ''
-    freq: new_center_frequency_test
+    freq: (Center_Freq_MHz)*(-1e6)
     maxoutbuf: '0'
     minoutbuf: '0'
     offset: '0'
@@ -209,7 +209,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    file: C:\Users\Sam\Desktop\GNU Radio Projects\MoonshineRadioChallenge\OFDM_IQ_SIM_256Char.wav
+    file: C:\Users\Sam\Desktop\GNU Radio Projects\GMR-DSP-OFDM\OFDM_IQ_SIM_256Char.wav
     maxoutbuf: '0'
     minoutbuf: '0'
     nchan: '1'
@@ -242,9 +242,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1008, 344.0]
+    coordinate: [1008, 552.0]
     rotation: 0
-    state: bypassed
+    state: disabled
 - name: qtgui_freq_sink_x_0
   id: qtgui_freq_sink_x
   parameters:
@@ -333,9 +333,8 @@ connections:
 - [blocks_float_to_complex_0, '0', blocks_multiply_xx_0, '0']
 - [blocks_float_to_complex_0, '0', qtgui_freq_sink_x_0, '0']
 - [blocks_multiply_xx_0, '0', blocks_throttle2_0, '0']
-- [blocks_throttle2_0, '0', high_pass_filter_0, '0']
+- [blocks_throttle2_0, '0', qtgui_freq_sink_x_0, '1']
 - [blocks_wavfile_source_0, '0', blocks_float_to_complex_0, '0']
-- [high_pass_filter_0, '0', qtgui_freq_sink_x_0, '1']
 
 metadata:
   file_format: 1
