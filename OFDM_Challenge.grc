@@ -33,7 +33,7 @@ options:
     state: enabled
 
 blocks:
-- name: Center_Freq_MHz
+- name: Signal_Center_Freq
   id: variable_qtgui_range
   parameters:
     comment: ''
@@ -43,8 +43,8 @@ blocks:
     orient: QtCore.Qt.Horizontal
     rangeType: float
     start: -3e6
-    step: '1'
-    stop: -2.5e6
+    step: 100e3
+    stop: 3e6
     value: -3e6
     widget: counter_slider
   states:
@@ -132,12 +132,12 @@ blocks:
     alias: ''
     amp: '1'
     comment: ''
-    freq: Center_Freq_MHz
+    freq: Signal_Center_Freq
     maxoutbuf: '0'
     minoutbuf: '0'
     offset: '0'
     phase: '0'
-    samp_rate: 10e6
+    samp_rate: 20e6
     showports: 'False'
     type: complex
     waveform: analog.GR_COS_WAVE
@@ -263,7 +263,7 @@ blocks:
     autoscale: 'False'
     average: '1.0'
     axislabels: 'True'
-    bw: 10e6
+    bw: 20e6
     color1: '"blue"'
     color10: '"dark blue"'
     color2: '"red"'

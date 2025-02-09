@@ -65,20 +65,20 @@ class default(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate = 32000
         self.band_pass_low_cutoff = band_pass_low_cutoff = -5e4
         self.band_pass_high_cutoff = band_pass_high_cutoff = 50e4
-        self.Center_Freq_MHz = Center_Freq_MHz = -3e6
+        self.Signal_Center_Freq = Signal_Center_Freq = -3e6
 
         ##################################################
         # Blocks
         ##################################################
 
-        self._Center_Freq_MHz_range = qtgui.Range(-3e6, -2.5e6, 1, -3e6, 200)
-        self._Center_Freq_MHz_win = qtgui.RangeWidget(self._Center_Freq_MHz_range, self.set_Center_Freq_MHz, "'Center_Freq_MHz'", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_layout.addWidget(self._Center_Freq_MHz_win)
+        self._Signal_Center_Freq_range = qtgui.Range(-3e6, 3e6, 100e3, -3e6, 200)
+        self._Signal_Center_Freq_win = qtgui.RangeWidget(self._Signal_Center_Freq_range, self.set_Signal_Center_Freq, "'Signal_Center_Freq'", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._Signal_Center_Freq_win)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
             0, #fc
-            10e6, #bw
+            20e6, #bw
             "", #name
             2,
             None # parent
@@ -126,7 +126,7 @@ class default(gr.top_block, Qt.QWidget):
         self._band_pass_high_cutoff_range = qtgui.Range(0, 100e6, 1, 50e4, 200)
         self._band_pass_high_cutoff_win = qtgui.RangeWidget(self._band_pass_high_cutoff_range, self.set_band_pass_high_cutoff, "'band_pass_high_cutoff'", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._band_pass_high_cutoff_win)
-        self.analog_sig_source_x_0 = analog.sig_source_c(10e6, analog.GR_COS_WAVE, Center_Freq_MHz, 1, 0, 0)
+        self.analog_sig_source_x_0 = analog.sig_source_c(20e6, analog.GR_COS_WAVE, Signal_Center_Freq, 1, 0, 0)
         self.analog_const_source_x_0 = analog.sig_source_f(0, analog.GR_CONST_WAVE, 0, 0, 0)
 
 
@@ -168,12 +168,12 @@ class default(gr.top_block, Qt.QWidget):
     def set_band_pass_high_cutoff(self, band_pass_high_cutoff):
         self.band_pass_high_cutoff = band_pass_high_cutoff
 
-    def get_Center_Freq_MHz(self):
-        return self.Center_Freq_MHz
+    def get_Signal_Center_Freq(self):
+        return self.Signal_Center_Freq
 
-    def set_Center_Freq_MHz(self, Center_Freq_MHz):
-        self.Center_Freq_MHz = Center_Freq_MHz
-        self.analog_sig_source_x_0.set_frequency(self.Center_Freq_MHz)
+    def set_Signal_Center_Freq(self, Signal_Center_Freq):
+        self.Signal_Center_Freq = Signal_Center_Freq
+        self.analog_sig_source_x_0.set_frequency(self.Signal_Center_Freq)
 
 
 
