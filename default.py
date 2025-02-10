@@ -66,19 +66,19 @@ class default(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate = 32000
         self.band_pass_low_cutoff = band_pass_low_cutoff = -5e4
         self.band_pass_high_cutoff = band_pass_high_cutoff = 50e4
-        self.Signal_Center_Freq = Signal_Center_Freq = 3e6
+        self.Signal_Center_Freq = Signal_Center_Freq = 300e6
 
         ##################################################
         # Blocks
         ##################################################
 
-        self._Signal_Center_Freq_range = qtgui.Range(-6e6, 6e6, 100e3, 3e6, 200)
+        self._Signal_Center_Freq_range = qtgui.Range(-600e6, 600e6, 100e3, 300e6, 200)
         self._Signal_Center_Freq_win = qtgui.RangeWidget(self._Signal_Center_Freq_range, self.set_Signal_Center_Freq, "'Signal_Center_Freq'", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._Signal_Center_Freq_win)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
-            0, #fc
+            300e6, #fc
             20e6, #bw
             "", #name
             1,
@@ -127,6 +127,16 @@ class default(gr.top_block, Qt.QWidget):
         self._band_pass_high_cutoff_range = qtgui.Range(0, 100e6, 1, 50e4, 200)
         self._band_pass_high_cutoff_win = qtgui.RangeWidget(self._band_pass_high_cutoff_range, self.set_band_pass_high_cutoff, "'band_pass_high_cutoff'", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._band_pass_high_cutoff_win)
+        self.band_pass_filter_0 = filter.fir_filter_ccf(
+            1,
+            firdes.band_pass(
+                1,
+                20e6,
+                1,
+                8e6,
+                400,
+                window.WIN_HAMMING,
+                6.76))
         self.analog_sig_source_x_0 = analog.sig_source_c(20e6, analog.GR_COS_WAVE, Signal_Center_Freq, 1, 0, 0)
         self.analog_const_source_x_0 = analog.sig_source_f(0, analog.GR_CONST_WAVE, 0, 0, 0)
 
@@ -136,8 +146,9 @@ class default(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.analog_const_source_x_0, 0), (self.blocks_float_to_complex_0, 1))
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))
+        self.connect((self.band_pass_filter_0, 0), (self.blocks_throttle2_0, 0))
         self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_multiply_xx_0, 0))
-        self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_throttle2_0, 0))
+        self.connect((self.blocks_multiply_xx_0, 0), (self.band_pass_filter_0, 0))
         self.connect((self.blocks_throttle2_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.blocks_wavfile_source_0, 0), (self.blocks_float_to_complex_0, 0))
 

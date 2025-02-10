@@ -42,10 +42,10 @@ blocks:
     min_len: '200'
     orient: QtCore.Qt.Horizontal
     rangeType: float
-    start: -6e6
+    start: -600e6
     step: 100e3
-    stop: 6e6
-    value: 3e6
+    stop: 600e6
+    value: 300e6
     widget: counter_slider
   states:
     bus_sink: false
@@ -72,7 +72,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1072, 704.0]
+    coordinate: [880, 584.0]
     rotation: 0
     state: enabled
 - name: band_pass_low_cutoff
@@ -93,7 +93,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [936, 704.0]
+    coordinate: [744, 584.0]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -157,22 +157,22 @@ blocks:
     comment: ''
     decim: '1'
     gain: '1'
-    high_cutoff_freq: -2e6
+    high_cutoff_freq: 8e6
     interp: '1'
-    low_cutoff_freq: -4e6
+    low_cutoff_freq: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: 20e6
     type: fir_filter_ccf
-    width: '1'
+    width: '400'
     win: window.WIN_HAMMING
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1008, 456.0]
+    coordinate: [816, 408.0]
     rotation: 0
-    state: bypassed
+    state: enabled
 - name: blocks_float_to_complex_0
   id: blocks_float_to_complex
   parameters:
@@ -225,7 +225,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [792, 384.0]
+    coordinate: [1104, 384.0]
     rotation: 0
     state: enabled
 - name: blocks_wavfile_source_0
@@ -277,7 +277,7 @@ blocks:
     color9: '"dark green"'
     comment: ''
     ctrlpanel: 'True'
-    fc: '0'
+    fc: 300e6
     fftsize: '1024'
     freqhalf: 'True'
     grid: 'False'
@@ -324,17 +324,17 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1216, 376.0]
+    coordinate: [1296, 376.0]
     rotation: 0
     state: enabled
 
 connections:
 - [analog_const_source_x_0, '0', blocks_float_to_complex_0, '1']
 - [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
-- [band_pass_filter_0, '0', qtgui_freq_sink_x_0, '0']
+- [band_pass_filter_0, '0', blocks_throttle2_0, '0']
 - [blocks_float_to_complex_0, '0', blocks_multiply_xx_0, '0']
-- [blocks_multiply_xx_0, '0', blocks_throttle2_0, '0']
-- [blocks_throttle2_0, '0', band_pass_filter_0, '0']
+- [blocks_multiply_xx_0, '0', band_pass_filter_0, '0']
+- [blocks_throttle2_0, '0', qtgui_freq_sink_x_0, '0']
 - [blocks_wavfile_source_0, '0', blocks_float_to_complex_0, '0']
 
 metadata:
