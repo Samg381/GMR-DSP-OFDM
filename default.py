@@ -63,25 +63,13 @@ class default(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.transition_width = transition_width = 400
         self.samp_rate = samp_rate = 32000
-        self.band_pass_low_cutoff = band_pass_low_cutoff = 2e6
-        self.band_pass_high_cutoff = band_pass_high_cutoff = 5e6
         self.Signal_Center_Freq = Signal_Center_Freq = 300e6
 
         ##################################################
         # Blocks
         ##################################################
 
-        self._transition_width_range = qtgui.Range(1, 1000, 1, 400, 200)
-        self._transition_width_win = qtgui.RangeWidget(self._transition_width_range, self.set_transition_width, "'transition_width'", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_layout.addWidget(self._transition_width_win)
-        self._band_pass_low_cutoff_range = qtgui.Range(1, 10e6, 1, 2e6, 200)
-        self._band_pass_low_cutoff_win = qtgui.RangeWidget(self._band_pass_low_cutoff_range, self.set_band_pass_low_cutoff, "'band_pass_low_cutoff'", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_layout.addWidget(self._band_pass_low_cutoff_win)
-        self._band_pass_high_cutoff_range = qtgui.Range(1, 10e6, 1, 5e6, 200)
-        self._band_pass_high_cutoff_win = qtgui.RangeWidget(self._band_pass_high_cutoff_range, self.set_band_pass_high_cutoff, "'band_pass_high_cutoff'", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_layout.addWidget(self._band_pass_high_cutoff_win)
         self._Signal_Center_Freq_range = qtgui.Range(-600e6, 600e6, 100e3, 300e6, 200)
         self._Signal_Center_Freq_win = qtgui.RangeWidget(self._Signal_Center_Freq_range, self.set_Signal_Center_Freq, "'Signal_Center_Freq'", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._Signal_Center_Freq_win)
@@ -91,7 +79,7 @@ class default(gr.top_block, Qt.QWidget):
             300e6, #fc
             20e6, #bw
             "", #name
-            1,
+            2,
             None # parent
         )
         self.qtgui_freq_sink_x_0.set_update_time(0.10)
@@ -107,7 +95,7 @@ class default(gr.top_block, Qt.QWidget):
 
 
 
-        labels = ['Signal', 'Multiplied', '', '', '',
+        labels = ['Raw', 'Multiplied', '', '', '',
             '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
             1, 1, 1, 1, 1]
@@ -116,7 +104,7 @@ class default(gr.top_block, Qt.QWidget):
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
             1.0, 1.0, 1.0, 1.0, 1.0]
 
-        for i in range(1):
+        for i in range(2):
             if len(labels[i]) == 0:
                 self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
             else:
@@ -127,20 +115,10 @@ class default(gr.top_block, Qt.QWidget):
 
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
-        self.blocks_wavfile_source_0 = blocks.wavfile_source('C:\\Users\\Sam\\Desktop\\GNU Radio Projects\\GMR-DSP-OFDM\\OFDM_IQ_SIM_256Char.wav', True)
-        self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, 20e6, True, 0 if "auto" == "auto" else max( int(float(0.1) * 20e6) if "auto" == "time" else int(0.1), 1) )
+        self.blocks_wavfile_source_0 = blocks.wavfile_source('C:\\Users\\Sam\\Desktop\\GNU Radio Projects\\GMR-DSP-OFDM\\OFDM_IQ_SIM_256Char.wav', False)
+        self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_gr_complex*1, 10e3, True, 0 if "auto" == "auto" else max( int(float(0.1) * 10e3) if "auto" == "time" else int(0.1), 1) )
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
-        self.band_pass_filter_0 = filter.fir_filter_ccc(
-            1,
-            firdes.complex_band_pass(
-                1,
-                20e6,
-                band_pass_low_cutoff,
-                band_pass_high_cutoff,
-                transition_width,
-                window.WIN_HAMMING,
-                6.76))
         self.analog_sig_source_x_0 = analog.sig_source_c(20e6, analog.GR_SIN_WAVE, Signal_Center_Freq, 1, 0, 0)
         self.analog_const_source_x_0 = analog.sig_source_f(0, analog.GR_CONST_WAVE, 0, 0, 0)
 
@@ -150,10 +128,10 @@ class default(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.analog_const_source_x_0, 0), (self.blocks_float_to_complex_0, 1))
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))
-        self.connect((self.band_pass_filter_0, 0), (self.blocks_throttle2_0, 0))
         self.connect((self.blocks_float_to_complex_0, 0), (self.blocks_multiply_xx_0, 0))
-        self.connect((self.blocks_multiply_xx_0, 0), (self.band_pass_filter_0, 0))
-        self.connect((self.blocks_throttle2_0, 0), (self.qtgui_freq_sink_x_0, 0))
+        self.connect((self.blocks_float_to_complex_0, 0), (self.qtgui_freq_sink_x_0, 0))
+        self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_throttle2_0, 0))
+        self.connect((self.blocks_throttle2_0, 0), (self.qtgui_freq_sink_x_0, 1))
         self.connect((self.blocks_wavfile_source_0, 0), (self.blocks_float_to_complex_0, 0))
 
 
@@ -165,32 +143,11 @@ class default(gr.top_block, Qt.QWidget):
 
         event.accept()
 
-    def get_transition_width(self):
-        return self.transition_width
-
-    def set_transition_width(self, transition_width):
-        self.transition_width = transition_width
-        self.band_pass_filter_0.set_taps(firdes.complex_band_pass(1, 20e6, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.transition_width, window.WIN_HAMMING, 6.76))
-
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-
-    def get_band_pass_low_cutoff(self):
-        return self.band_pass_low_cutoff
-
-    def set_band_pass_low_cutoff(self, band_pass_low_cutoff):
-        self.band_pass_low_cutoff = band_pass_low_cutoff
-        self.band_pass_filter_0.set_taps(firdes.complex_band_pass(1, 20e6, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.transition_width, window.WIN_HAMMING, 6.76))
-
-    def get_band_pass_high_cutoff(self):
-        return self.band_pass_high_cutoff
-
-    def set_band_pass_high_cutoff(self, band_pass_high_cutoff):
-        self.band_pass_high_cutoff = band_pass_high_cutoff
-        self.band_pass_filter_0.set_taps(firdes.complex_band_pass(1, 20e6, self.band_pass_low_cutoff, self.band_pass_high_cutoff, self.transition_width, window.WIN_HAMMING, 6.76))
 
     def get_Signal_Center_Freq(self):
         return self.Signal_Center_Freq

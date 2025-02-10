@@ -74,7 +74,7 @@ blocks:
     bus_structure: null
     coordinate: [880, 584.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: band_pass_low_cutoff
   id: variable_qtgui_range
   parameters:
@@ -95,7 +95,7 @@ blocks:
     bus_structure: null
     coordinate: [744, 584.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: samp_rate
   id: variable
   parameters:
@@ -128,7 +128,7 @@ blocks:
     bus_structure: null
     coordinate: [1024, 584.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: analog_const_source_x_0
   id: analog_const_source_x
   parameters:
@@ -191,9 +191,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [816, 408.0]
+    coordinate: [840, 392.0]
     rotation: 0
-    state: enabled
+    state: bypassed
 - name: blocks_float_to_complex_0
   id: blocks_float_to_complex
   parameters:
@@ -239,7 +239,7 @@ blocks:
     maximum: '0.1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samples_per_second: 20e6
+    samples_per_second: 10e3
     type: complex
     vlen: '1'
   states:
@@ -259,7 +259,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     nchan: '1'
-    repeat: 'True'
+    repeat: 'False'
   states:
     bus_sink: false
     bus_source: false
@@ -304,7 +304,7 @@ blocks:
     grid: 'False'
     gui_hint: ''
     label: Relative Gain
-    label1: Signal
+    label1: Raw
     label10: ''''''
     label2: Multiplied
     label3: ''''''
@@ -318,7 +318,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     name: '""'
-    nconnections: '1'
+    nconnections: '2'
     norm_window: 'False'
     showports: 'False'
     tr_chan: '0'
@@ -345,7 +345,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1392, 288.0]
+    coordinate: [1392, 296.0]
     rotation: 0
     state: enabled
 
@@ -354,8 +354,9 @@ connections:
 - [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
 - [band_pass_filter_0, '0', blocks_throttle2_0, '0']
 - [blocks_float_to_complex_0, '0', blocks_multiply_xx_0, '0']
+- [blocks_float_to_complex_0, '0', qtgui_freq_sink_x_0, '0']
 - [blocks_multiply_xx_0, '0', band_pass_filter_0, '0']
-- [blocks_throttle2_0, '0', qtgui_freq_sink_x_0, '0']
+- [blocks_throttle2_0, '0', qtgui_freq_sink_x_0, '1']
 - [blocks_wavfile_source_0, '0', blocks_float_to_complex_0, '0']
 
 metadata:
